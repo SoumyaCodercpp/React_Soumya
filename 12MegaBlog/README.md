@@ -1,12 +1,27 @@
-# React + Vite
+🔁 AuthService vs Redux: Roles & Responsibilities
+🔹 AuthService (Backend Interaction)
+✅ Actually logs the user in or out.
+Talks to Appwrite, which is the backend service.
+Handles:
+Account creation
+Session creation (login)
+Session deletion (logout)
+Getting current user info
+So It performs the real authentication.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🔹 Redux (authSlice) (Frontend State Management)
+❌ Does not perform real login/logout.
+✅ Just reflects the user's status in the frontend.
+Used to:
+    Show/hide UI components (Header, buttons, private routes)
+    Track if user is authenticated (status = true/false)
+    Hold user details for use in components
+    This makes your app reactive. When Redux state updates, the UI responds.
 
-Currently, two official plugins are available:
+🧠 status in Redux ≠ Auth Status in Appwrite
+authSlice.status: Frontend indicator (just tells the UI if a user is logged in)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Appwrite session: Real backend session stored in cookies by Appwrite SDK
 
-## Expanding the ESLint configuration
+So Redux is like a mirror — it reflects what's happening with real login state via authService.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

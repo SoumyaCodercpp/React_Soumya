@@ -65,7 +65,7 @@ export class Service{
    async deletePost(slug){
     try {
 
-      await this.databases.updateDocument(
+      await this.databases.deleteDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
         slug
@@ -101,6 +101,20 @@ export class Service{
                 queries
             
             )
+            /*
+            {
+  "total": 5,
+  "documents": [
+    {
+      "$id": "abc123",
+      "title": "My Post",
+      "slug": "my-post",
+      ...
+    },
+    ...
+  ]
+}
+            */ 
         } catch (error) {
             console.log("Appwrite serive :: getPost :: error", error);
             return false
@@ -139,20 +153,33 @@ export class Service{
     }
    }
 
+   // returns an url-"https://cloud.appwrite.io/v1/storage/buckets/<bucketId>/files/<fileId>/preview?...params"
+
    getFilePreview(fileId){
-        return this.bucket.getFilePreview(
+
+        try {
+          const session= this.bucket.getFilePreview(
             conf.appwriteBucketId,
             fileId
         )
+        console.log("this is session",session);
+
+        return session
+          
+        } catch (error) {
+          console.error("Error getting file preview:", error);
+        return "";
+        }
+        
     }
 
    
 
 }
 
-const service = new Service();
+const appwriteService = new Service();
 
-export default service
+export default appwriteService
 
 
 

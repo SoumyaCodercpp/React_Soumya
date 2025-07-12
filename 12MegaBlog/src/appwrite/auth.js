@@ -22,7 +22,7 @@ export class AuthService{
 
        const userAccount= await this.account.create(ID.unique(),email,password,name)
        if(userAccount){
-        return await login({email,password})
+        return await this.login({email,password}) // Login after sign-up
        } 
        else{
         return userAccount
@@ -37,25 +37,31 @@ export class AuthService{
    async login({email,password}){
     try {
 
-       return await this.account.createEmailPasswordSession(email,password)
+        const session = await this.account.createEmailPasswordSession(email,password)
+         console.log("✅ Login successful", session);
+        return session;
         
     } catch (error) {
+      console.error("❌ Login failed", error);
 
         throw error;
     }
    }
 
-   async getCurrentUser(){
-    try {
-
-       return await this.account.get();
-        
-    } catch (error) {
-
-         console.log("Appwrite serive :: logout :: error", error);
+   async getCurrentUser() {
+  try {
+    console.log("🚀 getCurrentUser called");
+    return await this.account.get();
+  } catch (error) {
+    console.log("💥 error caught in getCurrentUser");
+    if (error.code === 401) {
+      console.log("🔒 Not logged in. Guest user.");
+    } else {
+      console.error("❌ Unexpected error:", error);
     }
-    return null
-   }
+    return null;
+  }
+}
 
     async logout(){
     try {
